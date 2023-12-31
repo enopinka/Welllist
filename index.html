@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- import tailwind css -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- import alpine -->
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
@@ -16,12 +20,10 @@
     <h1 class="text-5xl font-bold text-blue-600">WELLLIST</h1>
     <h6>wishlist picker</h6>
   </header>
-  <body class="mx-20" x-data="formData">
-    <form
-      @submit.prevent="submitForm"
-      class="border-2 border-slate-200 p-2 rounded-md"
-    >
+  <body class="mx-20" x-data>
+    <div class="border-2 border-slate-200 p-6 rounded-md">
       <div class="grid gap-6 mb-6 mx-50">
+        <!-- nama barang -->
         <div>
           <label
             for="nama_barang"
@@ -29,7 +31,7 @@
             >Nama Barang</label
           >
           <input
-            x-model="formData.nama_barang"
+            x-model="$store.mystore.formData.nama_barang"
             type="text"
             id="nama_barang"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -37,6 +39,7 @@
           />
         </div>
 
+        <!-- harga -->
         <div>
           <label
             for="harga"
@@ -46,81 +49,47 @@
           <input
             type="number"
             id="harga"
-            x-model="formData.harga"
+            x-model="$store.mystore.formData.harga"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
           />
         </div>
 
+        <!-- prioritas -->
         <div>
-          <label
-            for="prioritas"
-            class="block mb-2 text-sm font-medium text-gray-900"
-            >Prioritas</label
-          >
+          <p class="block mb-2 text-sm font-medium text-gray-900">Prioritas</p>
 
-          <div class="flex">
-            <div class="flex items-center me-4">
-              <input id="prioritas1" type="radio" value="1"
-              name="inline-radio-group" x-model="formData.prioritas" class="w-4
-              h-4 text-blue-600 bg-gray-100 border-gray-300 />
-              <label
-                for="prioritas"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >1</label
-              >
-            </div>
-            <div class="flex items-center me-4">
-              <input id="prioritas2" type="radio" value="2"
-              name="inline-radio-group" x-model="formData.prioritas" class="w-4
-              h-4 text-blue-600 bg-gray-100 border-gray-300 />
-              <label
-                for="prioritas"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >2</label
-              >
-            </div>
-            <div class="flex items-center me-4">
-              <input id="prioritas3" type="radio" value="3"
-              name="inline-radio-group" x-model="formData.prioritas"class="w-4
-              h-4 text-blue-600 bg-gray-100 border-gray-300 />
-              <label
-                for="prioritas"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >3</label
-              >
-            </div>
-            <div class="flex items-center me-4">
-              <input id="prioritas4" type="radio" value="4"
-              name="inline-radio-group" x-model="formData.prioritas" class="w-4
-              h-4 text-blue-600 bg-gray-100 border-gray-300 />
-              <label
-                for="prioritas"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >4</label
-              >
-            </div>
-            <div class="flex items-center me-4">
-              <input id="prioritas5" type="radio" value="5"
-              name="inline-radio-group" x-model="formData.prioritas" class="w-4
-              h-4 text-blue-600 bg-gray-100 border-gray-300 />
-              <label
-                for="prioritas"
-                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >5</label
-              >
-            </div>
+          <div class="flex items-center gap-4">
+            <template x-for="prioritas in [1, 2, 3, 4, 5]">
+              <div class="flex items-center">
+                <input
+                  x-bind:id="'prioritas-' + prioritas"
+                  type="radio"
+                  x-bind:value="prioritas"
+                  name="inline-radio-group"
+                  x-model="$store.mystore.formData.prioritas"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                />
+                <label
+                  x-bind:for="'prioritas-' + prioritas"
+                  class="text-sm font-medium text-gray-900 ml-2"
+                  x-text="prioritas"
+                ></label>
+              </div>
+            </template>
           </div>
         </div>
+
+        <!-- button submit -->
         <button
-          @click="addFormData()"
+          @click="$store.mystore.addFormData()"
           type="button"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
         >
           Tambah Barang
         </button>
       </div>
-    </form>
+    </div>
 
     <div>
       <h3 class="font-semibold my-2">Daftar Barang</h3>
@@ -165,12 +134,12 @@
           <li>
             <div class="flex items-center p-2 rounded hover:bg-gray-100">
               <input
-                @change="sortBy('harga')"
-                x-model="formDataArray"
+                @change="$store.mystore.beginSort()"
+                x-model="$store.mystore.sortBy"
                 id="urut-harga"
                 type="radio"
                 value="harga"
-                name="urut-harga"
+                name="sort-by"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
               />
               <label
@@ -184,12 +153,12 @@
           <li>
             <div class="flex items-center p-2 rounded hover:bg-gray-100">
               <input
-                @change="sortBy('prioritas')"
+                @change="$store.mystore.beginSort()"
                 id="urut-prioritas"
                 type="radio"
                 value="prioritas"
-                x-model="formDataArray"
-                name="urut-prioritas"
+                x-model="$store.mystore.sortBy"
+                name="sort-by"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
               />
               <label
@@ -205,7 +174,7 @@
     </div>
 
     <div class="mb-2">
-      <template x-for="item in formDataArray">
+      <template x-for="item in $store.mystore.formDataArray">
         <div
           class="my-2 grid grid-rows-2 grid-flow-col border-2 border-slate-200 p-2 rounded-md"
         >
@@ -240,7 +209,7 @@
       </div>
       <div x-data="{ isResultVisible: false }">
         <button
-          @click="generateResult(harga_maksimal); isResultVisible = true"
+          @click="$store.mystore.generateResult(harga_maksimal); isResultVisible = true"
           type="button"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
         >
@@ -250,7 +219,7 @@
           <h4 class="font-semibold my-2">Hasil Penelusuran</h4>
         </div>
         <div x-show="isResultVisible">
-          <template x-for="item in resultArray">
+          <template x-for="item in $store.mystore.resultArray">
             <div
               class="my-2 grid grid-rows-2 grid-flow-col border-2 border-slate-200 p-2 rounded-md"
             >
@@ -280,118 +249,6 @@
       </div>
     </form>
 
-    <script>
-      document.addEventListener("alpine:init", () => {
-        Alpine.data("formData", () => ({
-          formData: {
-            nama_barang: "",
-            harga: 0,
-            prioritas: 0,
-          },
-          formDataArray: [],
-          resultArray: [],
-          isResultVisible: false,
-
-          addFormData() {
-            // Trim whitespace from form data properties
-            const trimmedNamaBarang = this.formData.nama_barang.trim();
-            //const trimmedHarga = this.formData.harga.trim();
-            //const trimmedPrioritas = this.formData.prioritas.trim();
-
-            // Check if any of the properties are empty after trimming
-            if (
-              trimmedNamaBarang !== "" &&
-              this.formData.harga !== 0 &&
-              this.formData.prioritas !== 0
-            ) {
-              // Add to array only if at least one property is not empty
-              this.formDataArray.push({
-                nama_barang: trimmedNamaBarang,
-                harga: this.formData.harga,
-                prioritas: this.formData.prioritas,
-              });
-              this.sortBy("harga");
-              // Clear form data
-              this.formData.nama_barang = "";
-              this.formData.harga = 0;
-              this.formData.prioritas = 0;
-            } else {
-              alert("Data tidak boleh kosong");
-            }
-          },
-          submitForm() {
-            this.addFormData();
-          },
-          generateResult(maxPrice) {
-            if (this.formDataArray.length === 0) {
-              alert("Daftar barang kosong!");
-            }
-
-            this.formDataArray.sort((a, b) => b.prioritas - a.prioritas);
-
-            while (maxPrice > 0 && this.formDataArray.length > 0) {
-              let selectedObject = null;
-
-              for (let i = 0; i < this.formDataArray.length; i++) {
-                if (parseFloat(this.formDataArray[i].harga) <= maxPrice) {
-                  selectedObject = this.formDataArray[i];
-                  this.resultArray.push(selectedObject);
-                  maxPrice -= parseFloat(selectedObject.harga);
-                }
-
-                const index = this.formDataArray.indexOf(selectedObject);
-                if (index !== -1) {
-                  this.formDataArray.splice(index, 1);
-                }
-              }
-            }
-
-            if (this.resultArray.length === 0) {
-              alert("Tidak ada barang yang dipilih!");
-            }
-
-            maxPrice = "";
-            this.isResultVisible = true;
-          },
-          refreshPage() {
-            location.reload();
-          },
-          sortBy(key) {
-            for (let i = 0; i < this.formDataArray.length; i++) {
-              let minIndex = i;
-
-              for (let j = i + 1; j < this.formDataArray.length; j++) {
-                if (key === "harga") {
-                  if (
-                    this.formDataArray[j].harga <
-                    this.formDataArray[minIndex].harga
-                  ) {
-                    minIndex = j;
-                    console.log("sort by harga");
-                  }
-                } else {
-                  console.log("sort by prioritas");
-                  if (
-                    this.formDataArray[j].prioritas <
-                    this.formDataArray[minIndex].prioritas
-                  ) {
-                    minIndex = j;
-                  }
-                }
-              }
-
-              // Move the condition to swap outside of the inner loop
-              console.log("tuker");
-              if (minIndex !== i) {
-                [this.formDataArray[i], this.formDataArray[minIndex]] = [
-                  this.formDataArray[minIndex],
-                  this.formDataArray[i],
-                ];
-              }
-            }
-          },
-        }));
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
