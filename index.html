@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <title>Wishlist</title>
+  </head>
+
+  <header class="my-4">
+    <h1 class="text-5xl font-bold text-blue-600">WELLLIST</h1>
+    <h6>wishlist picker</h6>
+  </header>
+  <body class="mx-20" x-data="formData">
+    <form
+      @submit.prevent="submitForm"
+      class="border-2 border-slate-200 p-2 rounded-md"
+    >
+      <div class="grid gap-6 mb-6 mx-50">
+        <div>
+          <label
+            for="nama_barang"
+            class="block mb-2 text-sm font-medium text-gray-900"
+            >Nama Barang</label
+          >
+          <input
+            x-model="formData.nama_barang"
+            type="text"
+            id="nama_barang"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="harga"
+            class="block mb-2 text-sm font-medium text-gray-900"
+            >Harga</label
+          >
+          <input
+            type="number"
+            id="harga"
+            x-model="formData.harga"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            for="prioritas"
+            class="block mb-2 text-sm font-medium text-gray-900"
+            >Prioritas</label
+          >
+
+          <div class="flex">
+            <div class="flex items-center me-4">
+              <input id="prioritas1" type="radio" value="1"
+              name="inline-radio-group" x-model="formData.prioritas" class="w-4
+              h-4 text-blue-600 bg-gray-100 border-gray-300 />
+              <label
+                for="prioritas"
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >1</label
+              >
+            </div>
+            <div class="flex items-center me-4">
+              <input id="prioritas2" type="radio" value="2"
+              name="inline-radio-group" x-model="formData.prioritas" class="w-4
+              h-4 text-blue-600 bg-gray-100 border-gray-300 />
+              <label
+                for="prioritas"
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >2</label
+              >
+            </div>
+            <div class="flex items-center me-4">
+              <input id="prioritas3" type="radio" value="3"
+              name="inline-radio-group" x-model="formData.prioritas"class="w-4
+              h-4 text-blue-600 bg-gray-100 border-gray-300 />
+              <label
+                for="prioritas"
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >3</label
+              >
+            </div>
+            <div class="flex items-center me-4">
+              <input id="prioritas4" type="radio" value="4"
+              name="inline-radio-group" x-model="formData.prioritas" class="w-4
+              h-4 text-blue-600 bg-gray-100 border-gray-300 />
+              <label
+                for="prioritas"
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >4</label
+              >
+            </div>
+            <div class="flex items-center me-4">
+              <input id="prioritas5" type="radio" value="5"
+              name="inline-radio-group" x-model="formData.prioritas" class="w-4
+              h-4 text-blue-600 bg-gray-100 border-gray-300 />
+              <label
+                for="prioritas"
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >5</label
+              >
+            </div>
+          </div>
+        </div>
+        <button
+          @click="addFormData()"
+          type="button"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+        >
+          Tambah Barang
+        </button>
+      </div>
+    </form>
+
+    <div>
+      <h3 class="font-semibold my-2">Daftar Barang</h3>
+    </div>
+
+    <div
+      x-data="{ open: false, formDataArray:[] }"
+      class="relative flex justify-end"
+    >
+      <button
+        id="sortingMenuButton"
+        @click="open = !open"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2.5 py-2 text-center inline-flex items-center z-50"
+        type="button"
+      >
+        Urutkan berdasarkan
+        <svg
+          class="w-2.5 h-2.5 ms-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div
+        x-show="open"
+        id="sortingMenu"
+        class="absolute z-50 top-full right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow justify-end"
+        @click.away="open = false"
+      >
+        <ul class="p-3 space-y-1 text-sm text-gray-700">
+          <li>
+            <div class="flex items-center p-2 rounded hover:bg-gray-100">
+              <input
+                @change="sortBy('harga')"
+                x-model="formDataArray"
+                id="urut-harga"
+                type="radio"
+                value="harga"
+                name="urut-harga"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+              />
+              <label
+                for="urut-harga"
+                class="w-full ms-2 text-sm font-medium text-gray-900 rounded"
+              >
+                Harga
+              </label>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center p-2 rounded hover:bg-gray-100">
+              <input
+                @change="sortBy('prioritas')"
+                id="urut-prioritas"
+                type="radio"
+                value="prioritas"
+                x-model="formDataArray"
+                name="urut-prioritas"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
+              />
+              <label
+                for="urut-prioritas"
+                class="w-full ms-2 text-sm font-medium text-gray-900 rounded"
+              >
+                Prioritas
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <template x-for="item in formDataArray">
+        <div
+          class="my-2 grid grid-rows-2 grid-flow-col border-2 border-slate-200 p-2 rounded-md"
+        >
+          <div class="row-span-1 col-span-2">
+            <p x-text="item.nama_barang" class="font-semibold text-xl"></p>
+          </div>
+          <div class="row-span-1 col-span-2">
+            <p class="inline">Rp</p>
+            <p x-text="item.harga" class="inline"></p>
+          </div>
+          <div class="row-span-2">
+            <p class="text-center">Prioritas</p>
+            <p x-text="item.prioritas" class="text-center text-xl"></p>
+          </div>
+        </div>
+      </template>
+    </div>
+    <form>
+      <div>
+        <label
+          for="harga_maksimal"
+          class="block mb-2 text-sm font-medium text-gray-900"
+          >Harga Maksimal</label
+        >
+        <input
+          type="number"
+          id="harga_maksimal"
+          x-model="harga_maksimal"
+          class="my-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          required
+        />
+      </div>
+      <div x-data="{ isResultVisible: false }">
+        <button
+          @click="generateResult(harga_maksimal); isResultVisible = true"
+          type="button"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+        >
+          Generate
+        </button>
+        <div x-show="isResultVisible">
+          <h4 class="font-semibold my-2">Hasil Penelusuran</h4>
+        </div>
+        <div x-show="isResultVisible">
+          <template x-for="item in resultArray">
+            <div
+              class="my-2 grid grid-rows-2 grid-flow-col border-2 border-slate-200 p-2 rounded-md"
+            >
+              <div class="row-span-1 col-span-2">
+                <p x-text="item.nama_barang" class="font-semibold text-xl"></p>
+              </div>
+              <div class="row-span-1 col-span-2">
+                <p x-text="item.harga"></p>
+              </div>
+              <div class="row-span-2">
+                <p class="text-center">Prioritas</p>
+                <p x-text="item.prioritas" class="text-center text-xl"></p>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div>
+          <button
+            x-show="isResultVisible"
+            @click="refreshPage()"
+            type="button"
+            class="my-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+          >
+            Restart
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("formData", () => ({
+          formData: {
+            nama_barang: "",
+            harga: 0,
+            prioritas: 0,
+          },
+          formDataArray: [],
+          resultArray: [],
+          isResultVisible: false,
+
+          addFormData() {
+            // Trim whitespace from form data properties
+            const trimmedNamaBarang = this.formData.nama_barang.trim();
+            //const trimmedHarga = this.formData.harga.trim();
+            //const trimmedPrioritas = this.formData.prioritas.trim();
+
+            // Check if any of the properties are empty after trimming
+            if (
+              trimmedNamaBarang !== "" &&
+              this.formData.harga !== 0 &&
+              this.formData.prioritas !== 0
+            ) {
+              // Add to array only if at least one property is not empty
+              this.formDataArray.push({
+                nama_barang: trimmedNamaBarang,
+                harga: this.formData.harga,
+                prioritas: this.formData.prioritas,
+              });
+              this.sortBy("harga");
+              // Clear form data
+              this.formData.nama_barang = "";
+              this.formData.harga = 0;
+              this.formData.prioritas = 0;
+            } else {
+              alert("Data tidak boleh kosong");
+            }
+          },
+          submitForm() {
+            this.addFormData();
+          },
+          generateResult(maxPrice) {
+            if (this.formDataArray.length === 0) {
+              alert("Daftar barang kosong!");
+            }
+
+            this.formDataArray.sort((a, b) => b.prioritas - a.prioritas);
+
+            while (maxPrice > 0 && this.formDataArray.length > 0) {
+              let selectedObject = null;
+
+              for (let i = 0; i < this.formDataArray.length; i++) {
+                if (parseFloat(this.formDataArray[i].harga) <= maxPrice) {
+                  selectedObject = this.formDataArray[i];
+                  this.resultArray.push(selectedObject);
+                  maxPrice -= parseFloat(selectedObject.harga);
+                }
+
+                const index = this.formDataArray.indexOf(selectedObject);
+                if (index !== -1) {
+                  this.formDataArray.splice(index, 1);
+                }
+              }
+            }
+
+            if (this.resultArray.length === 0) {
+              alert("Tidak ada barang yang dipilih!");
+            }
+
+            maxPrice = "";
+            this.isResultVisible = true;
+          },
+          refreshPage() {
+            location.reload();
+          },
+          sortBy(key) {
+            for (let i = 0; i < this.formDataArray.length; i++) {
+              let minIndex = i;
+
+              for (let j = i + 1; j < this.formDataArray.length; j++) {
+                if (key === "harga") {
+                  if (
+                    this.formDataArray[j].harga <
+                    this.formDataArray[minIndex].harga
+                  ) {
+                    minIndex = j;
+                    console.log("sort by harga");
+                  }
+                } else {
+                  console.log("sort by prioritas");
+                  if (
+                    this.formDataArray[j].prioritas <
+                    this.formDataArray[minIndex].prioritas
+                  ) {
+                    minIndex = j;
+                  }
+                }
+              }
+
+              // Move the condition to swap outside of the inner loop
+              console.log("tuker");
+              if (minIndex !== i) {
+                [this.formDataArray[i], this.formDataArray[minIndex]] = [
+                  this.formDataArray[minIndex],
+                  this.formDataArray[i],
+                ];
+              }
+            }
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>
