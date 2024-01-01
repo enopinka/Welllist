@@ -1,9 +1,9 @@
 document.addEventListener("alpine:init", () => {
   Alpine.store("mystore", {
     formData: {
-      nama_barang: "Nama barang",
-      harga: 12000,
-      prioritas: 2,
+      nama_barang: "",
+      harga: 0,
+      prioritas: 0,
     },
     formDataArray: [],
     resultArray: [],
@@ -29,8 +29,6 @@ document.addEventListener("alpine:init", () => {
     addFormData() {
       // Trim whitespace from form data properties
       const trimmedNamaBarang = this.formData.nama_barang.trim();
-      //const trimmedHarga = this.formData.harga.trim();
-      //const trimmedPrioritas = this.formData.prioritas.trim();
 
       // Check if any of the properties are empty after trimming
       if (
@@ -59,11 +57,13 @@ document.addEventListener("alpine:init", () => {
     generateResult(maxPrice) {
       if (this.formDataArray.length === 0) {
         alert("Daftar barang kosong!");
+        return;
       }
 
       this.formDataArray.sort((a, b) => b.prioritas - a.prioritas);
 
       while (maxPrice > 0 && this.formDataArray.length > 0) {
+        console.log("here");
         let selectedObject = null;
 
         for (let i = 0; i < this.formDataArray.length; i++) {
@@ -71,20 +71,20 @@ document.addEventListener("alpine:init", () => {
             selectedObject = this.formDataArray[i];
             this.resultArray.push(selectedObject);
             maxPrice -= parseFloat(selectedObject.harga);
-          }
 
-          const index = this.formDataArray.indexOf(selectedObject);
-          if (index !== -1) {
+            const index = this.formDataArray.indexOf(selectedObject);
+
             this.formDataArray.splice(index, 1);
           }
         }
+        break;
       }
 
       if (this.resultArray.length === 0) {
         alert("Tidak ada barang yang dipilih!");
       }
 
-      maxPrice = "";
+      maxPrice = 0;
       this.isResultVisible = true;
     },
 
