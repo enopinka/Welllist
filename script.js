@@ -7,45 +7,28 @@ document.addEventListener("alpine:init", () => {
     },
     formDataArray: [],
     resultArray: [],
-    isResultVisible: false,
+
     sortBy: "harga",
 
-    init() {
-      for (let a = 0; a < 5; a++) {
-        this.formDataArray.push({
-          nama_barang: "Nama barang ke-" + a,
-          harga: 10000 * (a + 1),
-          prioritas: a + 1,
-        });
-      }
-
-      this.formDataArray.push({
-        nama_barang: "Nama barang ke-" + 5,
-        harga: 2000,
-        prioritas: 3,
-      });
-    },
-
+    // fungsi untuk menambahkan barang ke dalam formDataArray
     addFormData() {
-      // Trim whitespace from form data properties
       const trimmedNamaBarang = this.formData.nama_barang.trim();
-
-      // Check if any of the properties are empty after trimming
       if (
         trimmedNamaBarang !== "" &&
         this.formData.harga !== 0 &&
         this.formData.prioritas !== 0
       ) {
-        // Add to array only if at least one property is not empty
+        //memasukkan ke dalam array
         this.formDataArray.push({
           nama_barang: trimmedNamaBarang,
           harga: this.formData.harga,
           prioritas: this.formData.prioritas,
         });
 
+        // mengurutkan array setelah ditambahkan
         this.beginSort();
 
-        // Clear form data
+        // menghapus data setelah setelah ditambahkan
         this.formData.nama_barang = "";
         this.formData.harga = 0;
         this.formData.prioritas = 0;
@@ -54,7 +37,9 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    // algoritma knapsack
     generateResult(maxPrice) {
+      // ketika tidak ada barang ditambahkan
       if (this.formDataArray.length === 0) {
         alert("Daftar barang kosong!");
         return;
@@ -63,7 +48,7 @@ document.addEventListener("alpine:init", () => {
       this.formDataArray.sort((a, b) => b.prioritas - a.prioritas);
 
       while (maxPrice > 0 && this.formDataArray.length > 0) {
-        console.log("here");
+        console.log("while loop");
         let selectedObject = null;
 
         for (let i = 0; i < this.formDataArray.length; i++) {
@@ -73,25 +58,24 @@ document.addEventListener("alpine:init", () => {
             maxPrice -= parseFloat(selectedObject.harga);
 
             const index = this.formDataArray.indexOf(selectedObject);
-
-            this.formDataArray.splice(index, 1);
           }
         }
+        // setting ulang maxPrice menjadi nol
+        maxPrice = 0;
         break;
       }
-
+      // ketika uang yang dimasukkan tidak dapat memenuhi satu barang pun
       if (this.resultArray.length === 0) {
         alert("Tidak ada barang yang dipilih!");
       }
-
-      maxPrice = 0;
-      this.isResultVisible = true;
     },
 
+    // fungsi untuk melakukan reset halaman
     refreshPage() {
       location.reload();
     },
 
+    // fungsi untuk mengurutkan item dalam formDataArray secara menaik
     beginSort() {
       console.log(this.formDataArray.length);
       for (let i = 0; i < this.formDataArray.length; i++) {
@@ -99,6 +83,7 @@ document.addEventListener("alpine:init", () => {
         let minIndex = i;
 
         for (let j = i + 1; j < this.formDataArray.length; j++) {
+          // mengurutkan berdasarkan harga
           if (this.sortBy == "harga") {
             console.log("called");
             if (
@@ -108,6 +93,7 @@ document.addEventListener("alpine:init", () => {
               console.log("sort by harga");
             }
           } else {
+            // mengurutkan berdasarkan prioritas
             console.log("sort by prioritas");
             if (
               this.formDataArray[j].prioritas <
@@ -118,7 +104,7 @@ document.addEventListener("alpine:init", () => {
           }
         }
 
-        // Move the condition to swap outside of the inner loop
+        //menukar posisi jika terdapat posisi tidak tepat
         console.log("tuker");
         if (minIndex !== i) {
           [this.formDataArray[i], this.formDataArray[minIndex]] = [

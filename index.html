@@ -18,13 +18,14 @@
 
   <header class="my-4">
     <h1 class="text-5xl font-bold text-blue-600">WELLLIST</h1>
-    <h6>wishlist picker</h6>
+    <h6>Wishlist Picker</h6>
   </header>
   <body class="mx-20" x-data>
     <div class="border-2 border-slate-200 p-6 rounded-md">
       <div class="grid gap-6 mb-6 mx-50">
-        <!-- nama barang -->
+        <!-- input nama barang -->
         <div>
+          <p class="mb-4">Masukkan barang-barang dalam daftar keinginan Anda</p>
           <label
             for="nama_barang"
             class="block mb-2 text-sm font-medium text-gray-900"
@@ -39,7 +40,7 @@
           />
         </div>
 
-        <!-- harga -->
+        <!-- input harga -->
         <div>
           <label
             for="harga"
@@ -55,7 +56,7 @@
           />
         </div>
 
-        <!-- prioritas -->
+        <!--input prioritas -->
         <div>
           <p class="block mb-2 text-sm font-medium text-gray-900">Prioritas</p>
 
@@ -80,7 +81,7 @@
           </div>
         </div>
 
-        <!-- button submit -->
+        <!-- button submit menyimpan setiap barang-->
         <button
           @click="$store.mystore.addFormData()"
           type="button"
@@ -90,7 +91,7 @@
         </button>
       </div>
     </div>
-
+    <!-- menampilkan daftar barang -->
     <div>
       <h3 class="font-semibold my-2">Daftar Barang</h3>
     </div>
@@ -99,6 +100,7 @@
       x-data="{ open: false, formDataArray:[] }"
       class="relative flex justify-end"
     >
+      <!-- sorting button untuk memilih pilihan sorting -->
       <button
         id="sortingMenuButton"
         @click="open = !open"
@@ -173,6 +175,7 @@
       </div>
     </div>
 
+    <!-- menampilkan item dalam array -->
     <div class="mb-2">
       <template x-for="item in $store.mystore.formDataArray">
         <div
@@ -192,12 +195,14 @@
         </div>
       </template>
     </div>
+
+    <!-- memasukkan anggaran maksimal -->
     <form>
       <div>
         <label
           for="harga_maksimal"
           class="block mb-2 text-sm font-medium text-gray-900"
-          >Harga Maksimal</label
+          >Anggaran Maksimal</label
         >
         <input
           type="number"
@@ -207,14 +212,20 @@
           required
         />
       </div>
-      <div x-data="{ isResultVisible: false }">
+
+      <!--generate result button -->
+      <div x-data="{ isResultVisible: false, isClicked: false }">
         <button
-          @click="$store.mystore.generateResult(harga_maksimal); isResultVisible = true"
+          @click="$store.mystore.generateResult(harga_maksimal); isResultVisible = true; isClicked = true"
           type="button"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+          x-bind:disabled="isClicked"
+          class="my-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+          x-bind:class="{ 'bg-blue-700': !isClicked, 'bg-blue-800': isClicked }"
         >
           Generate
         </button>
+
+        <!-- menampilkan hasil penelusuran -->
         <div x-show="isResultVisible">
           <h4 class="font-semibold my-2">Hasil Penelusuran</h4>
         </div>
@@ -236,6 +247,8 @@
             </div>
           </template>
         </div>
+
+        <!-- restart button -->
         <div>
           <button
             x-show="isResultVisible"
